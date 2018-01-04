@@ -66,7 +66,7 @@ if __name__ == "__main__":
                                  "key is the local name of the ontology while the value is its URL.")
     arg_parser.add_argument("-o", "--output-dir", dest="output_dir", required=True,
                             help="The directory where to store the documentation files created.")
-    arg_parser.add_argument("-s", "--source-material-url", dest="source_material_url",
+    arg_parser.add_argument("-s", "--source-material-url", dest="source_material_url", default="../imports",
                             help="The directory that contains all the LODE related files for "
                                  "presentation on the browser.")
     arg_parser.add_argument("-l", "--lode-url", dest="lode_url",
@@ -96,4 +96,8 @@ if __name__ == "__main__":
     sl.create_documentation()
 
     # How to call it for a specific ontology:
-    # python sl.py -pu cito:http://purl.org/spar/cito -o ../cito/docs/current -s ../imports
+    #
+    # python sl.py -pu cito:http://purl.org/spar/cito -o ../cito/docs/current
+    #
+    # Note that the directory "imports" should be copied in "../cito/docs/" in order
+    # to allow a correct visualisation of the HTML documentation.
