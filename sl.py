@@ -76,6 +76,7 @@ if __name__ == "__main__":
                             help="The ISO code of the language used to retrieve the documentation "
                                  "(default: 'en').")
     arg_parser.add_argument("-repl", "--string-replace", dest="string_replace",
+                            default="<object data=\"https?:[^\"]+/([^/\"]+)\"-><object data=\"\\1\"",
                             help="A 'source->replace' regular expression for replacement of strings.")
     arg_parser.add_argument("-f", "--lode-functions", dest="lode_func",
                             help="The particular function to be used when calling LODE (default: 'owlapi=true').")
