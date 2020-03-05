@@ -23,17 +23,23 @@ import argparse
 import json
 
 
+LODE_URL = "https://w3id.org/lode"
+REAL_LODE_URL = "http://150.146.207.114/lode"
+
 class StaticLODE(object):
     def __init__(self, doc_dir, onto_map, lang="en", imported_url=None,
-                 lode_url="http://eelst.cs.unibo.it/apps/LODE", repl=None, lode_func=None):
+                 lode_url=LODE_URL, repl=None, lode_func=None):
         self.doc_dir = doc_dir
         if lode_func is None:
-            self.lode_url = lode_url + "/extract?owlapi=true&lang=%s&url=" % lang
+            # self.lode_url = lode_url + "/extract?owlapi=true&lang=%s&url=" % lang
+            self.lode_url = lode_url + "/owlapi/lang=%s/" % lang
         else:
-            self.lode_url = lode_url + "/extract?%s&lang=%s&url=" % (lode_func, lang)
+            # self.lode_url = lode_url + "/extract?%s&lang=%s&url=" % (lode_func, lang)
+            self.lode_url = lode_url + "/%s/lang=%s/" % (lode_func, lang)
         self.imported_basepath = lode_url
         self.imported_url = imported_url
         self.onto_map = onto_map
+
         self.repl = repl
 
 
@@ -45,9 +51,13 @@ class StaticLODE(object):
             cur_doc = requests.get(self.lode_url + ontology_url).text
             if self.imported_url is not None:
                 cur_doc = cur_doc.replace(self.imported_basepath, self.imported_url)
+                cur_doc = cur_doc.replace(LODE_URL, self.imported_url)
+                cur_doc = cur_doc.replace(REAL_LODE_URL, self.imported_url)
             if self.repl is not None:
                 orig_repl = self.repl.split("->")
                 cur_doc = re.sub(orig_repl[0], orig_repl[1], cur_doc)
+                # fixed default replace
+                cur_doc = re.sub("http://www.essepuntato.it/lode", "https://w3id.org/lode", cur_doc)
             cur_doc = re.sub("<dl><dt>Other visualisation:</dt><dd>"
                              "<a href=\"[^\"]+\">Ontology source</a></dd></dl>", "", cur_doc)
             if not os.path.exists(self.doc_dir):
@@ -70,7 +80,8 @@ if __name__ == "__main__":
                             help="The directory that contains all the LODE related files for "
                                  "presentation on the browser.")
     arg_parser.add_argument("-l", "--lode-url", dest="lode_url",
-                            default="http://eelst.cs.unibo.it/apps/LODE",
+                            # default="http://eelst.cs.unibo.it/apps/LODE",
+                            default="https://w3id.org/lode",
                             help="The URL where LODE is available.")
     arg_parser.add_argument("-lang", "--language", dest="language", default="en",
                             help="The ISO code of the language used to retrieve the documentation "
